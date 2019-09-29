@@ -1,0 +1,54 @@
+h=0.1;
+F='10*(y-x)';
+G='30*x-y-x*z';
+H='x*y-4*z';
+I=['x-4/3*XA+1/3*XB=2/3*H*(',F,')'];
+J=['y-4/3*YA+1/3*YB=2/3*H*(',G,')'];
+K=['z-4/3*ZA+1/3*ZB=2/3*H*(',H,')'];
+n=100;
+t=zeros(1,n);
+x=t;
+y=t;
+z=t;
+t(1)=0;
+x(1)=1;
+y(1)=2;
+z(1)=3;
+t(2)=t(1)+h;
+u=subs(F,{'x','y'},{x(1),y(1)});
+v=subs(G,{'x','y','z'},{x(1),y(1),z(1)});
+w=subs(H,{'z','y','x'},{z(1),y(1),x(1)});
+kx=x(1)+u*h;
+ky=y(1)+v*h;
+kz=z(1)+w*h;
+kl=x(1)+u*h/2;
+km=y(1)+v*h/2;
+kn=z(1)+w*h/2;
+u2=subs(F,{'x','y'},{kl,km});
+v2=subs(G,{'x','y','z'},{kl,km,kn});
+w2=subs(H,{'x','y','z'},{kl,km,kn});
+kll=kl+u2*h/2;
+kmm=km+v2*h/2;
+knn=kn+w2*h/2;
+tx=(x(1)+kx)*h/2;
+ty=(y(1)+ky)*h/2;
+tz=(z(1)+kz)*h/2;
+txx=(x(1)+2*kl+kll)*h/2;
+tyy=(t(1)+2*km+kmm)*h/2;
+tzz=(z(1)+2*kn+knn)*h/2;
+x(2)=x(1)+(4*txx-tx)/3;
+y(2)=x(1)+(4*tyy-ty)/3;
+z(2)=x(1)+(4*tzz-tz)/3;
+for i=3:n
+    i
+    t(i)=t(i-1)+h;
+    aa=subs(I,{'XA','XB','H'},{x(i-1),x(i-2),h});
+    bb=subs(J,{'YA','YB','H'},{y(i-1),y(i-2),h});
+    cc=subs(K,{'ZA','ZB','H'},{z(i-1),z(i-2),h});
+    [rx,ry,rz]=solve(aa,bb,cc);
+    x(i)=vpa(rx(1),16);
+    y(i)=vpa(ry(1),16);
+    z(i)=vpa(rz(1),16);
+end
+plot3(x,y,z)
+hold on
